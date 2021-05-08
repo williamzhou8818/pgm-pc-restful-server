@@ -25,14 +25,14 @@ const {v4: uuidv4} = require('uuid');
             local_ip: ip,
             port: "5500",
             image: `http://${req.headers.host}/001-00.png`,
-            title: "test one",
+            title: "test one"
          },
          {
             user_id: uuidv4(),
             local_ip: ip,
             port: "5500",
             image: `http://${req.headers.host}/00005-00.png`,
-            title: "test two",
+            title: "test two"
          },
 
     ]
