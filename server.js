@@ -18,6 +18,7 @@ app.use('/', express.static(publicFolder));
 
 //router
 app.use('/api/v1/auth', require('./routers/auth'));
+app.use('/api/v1/user', require('./routers/user'));
 
 //main root
 app.use('/', (req, res) =>  {
