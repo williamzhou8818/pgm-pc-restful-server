@@ -1,6 +1,6 @@
 
 const express = require('express');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 const {v4: uuidv4} = require('uuid');
 
@@ -17,6 +17,7 @@ router.post('/', (req, res) => {
             mac: mac
         }
     }
+
     jwt.sign(payload, 'dogrRuning', {
         expiresIn: 3600,
     }, (err, token) => { 
