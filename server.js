@@ -30,11 +30,13 @@ let uploadsFolder = path.join(__dirname, 'uploads');
 // app.use('/', express.static(publicFolder));
 app.use('/my-uploads', express.static(uploadsFolder));
 
-
+//***************************************************************************************************** */
 //router
 app.use('/api/v1/auth', require('./routers/auth'));
 app.use('/api/v1/user', require('./routers/user'));
+app.use('/api/v1/wr04', require('./routers/wr04'));
 
+//***************************************************************************************************** */
 
 //Image upload test
 app.post('/upload', upload.single('image'), function (req, res, next) {
