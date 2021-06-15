@@ -1,4 +1,6 @@
 const express = require('express');
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 const sequelize = require('./utils/database')
 const path = require('path');
 const multer = require('multer');
@@ -15,7 +17,41 @@ const upload = multer({ storage: storage});
 const app = express();
 const cors = require('cors');       
 
+//*** swagger */
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "PGM-Aphro3D Express API with Swagger",
+      version: "0.1.0",
+      description:
+        "This is a simple CRUD API application made with Express and documented with Swagger",
+      license: {
+        name: "MIT",
+        url: "https://spdx.org/licenses/MIT.html",
+      },
+      contact: {
+        name: "PGM",
+        url: "https://pgm.com.cn",
+        email: "info@email.com",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:5500/api/v1",
+      },
+    ],
+  },
+  apis: ["./routers/project/index.js", "./routers/resource/index.js"],
+};
 
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true })
+
+);
 
 const PORT = 5500 ||  process.env.PORT;
 app.use(cors());
@@ -34,7 +70,8 @@ app.use('/my-uploads', express.static(uploadsFolder));
 //router
 app.use('/api/v1/auth', require('./routers/auth'));
 app.use('/api/v1/user', require('./routers/user'));
-app.use('/api/v1/wr04', require('./routers/wr04'));
+app.use('/api/v1/project', require('./routers/project'));
+app.use('/api/v1/resource', require('./routers/resource'));
 
 //***************************************************************************************************** */
 
