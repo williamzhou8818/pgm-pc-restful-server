@@ -6,8 +6,8 @@ const {v4: uuidv4} = require('uuid');
 
 
 /**
- * @route GET api/auth
- * @desc Get logged  in user
+ * @route  GET api/auth
+ * @desc   Get logged  in user
  * @access Private
  */
  let  ip;

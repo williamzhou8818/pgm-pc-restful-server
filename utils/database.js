@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 
 
-
 const sequelize = new Sequelize('aphro3d_pgm', 'root', 'zhouli1118', {
     dialect: 'mysql',
     host: 'localhost',
