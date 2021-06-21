@@ -73,6 +73,9 @@ app.use('/api/v1/user', require('./routers/user'));
 app.use('/api/v1/project', require('./routers/project'));
 app.use('/api/v1/resource', require('./routers/resource'));
 
+//testing 
+app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-model'));
+
 //***************************************************************************************************** */
 
 //Image upload test

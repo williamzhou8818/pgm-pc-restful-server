@@ -123,43 +123,6 @@ const Project = require('../../models/Project');
 
 
 /****************************************************************** */
-//testing  data 
-router.get('/fack-project-data',  (req, res) =>  {
-    const data = [
-        {
-          "id": 286,
-          "checked": false,
-          "name": "Style-One",
-          "imgUrl": "http://pgm-aphro3d-server-uploads.oss-accelerate.aliyuncs.com/826664b-00e4-df62-af6-b258340fc7f6.png",
-        },
-        {
-          "id": 286,
-          "checked": false,
-          "name": "Style-Two",
-          "imgUrl": "http://pgm-aphro3d-server-uploads.oss-accelerate.aliyuncs.com/2a48dc6-0be3-8e52-add-26122cf21261.png",
-        },
-        {
-          "id": 286,
-          "checked": false,
-          "name": "Style-Three",
-          "imgUrl": "http://pgm-aphro3d-server-uploads.oss-accelerate.aliyuncs.com/84b351-afb7-a17e-f633-1c5416a1b6a.png",
-        },
-        { 
-          "id": 286,
-          "checked": false,
-          "name": "Style-Four",
-          "imgUrl": "http://pgm-aphro3d-server-uploads.oss-accelerate.aliyuncs.com/0e8be42-dc21-1202-b4ae-45362e4dfc7.png",
-        },
-        {
-          "id": 286,
-          "checked": true,
-          "name": "Style-Five",
-          "imgUrl": "http://pgm-aphro3d-server-uploads.oss-accelerate.aliyuncs.com/0e8be42-dc21-1202-b4ae-45362e4dfc7.png",
-        } 
-      ]
-    
-    res.status(200).json(data);
-})
 
 /**@GET Fetch all the project */
 router.get('/', (req, res) =>  {
