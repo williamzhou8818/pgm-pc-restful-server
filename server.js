@@ -63,7 +63,7 @@ app.use(express.urlencoded({limit: '520mb', extended:false}));
 //public folder
 let publicFolder = path.join(__dirname, 'public');
 let uploadsFolder = path.join(__dirname, 'uploads');
-// app.use('/', express.static(publicFolder));
+app.use('/', express.static(publicFolder));
 app.use('/my-uploads', express.static(uploadsFolder));
 
 //***************************************************************************************************** */

@@ -119,10 +119,35 @@ const express = require('express');
 const router = express.Router();
 const uuid  = require('uuid');
 const Project = require('../../models/Project'); 
+const FakeProjectModel =  require('../../models/FakeProjectModel');
 
-
+const  {Op} = require('sequelize'); 
 
 /****************************************************************** */
+
+
+
+/**@GET Project by id */
+
+router.get('/get_project_by_ids', (req, res) => { 
+   
+    if (req.body.data) {
+ 
+        FakeProjectModel.findAll({
+            where: { 
+                [Op.or]: req.body.data
+            }
+        }).then(result =>  { 
+            return res.status(200).send(result); 
+        }).catch(err => { 
+            console.log(err)
+            return res.status(500).send('Server Error');
+        })
+
+    }
+
+})
+
 
 /**@GET Fetch all the project */
 router.get('/', (req, res) =>  {
@@ -134,25 +159,6 @@ router.get('/', (req, res) =>  {
          return res.status(500).send('Server Error');
      })
 })
-
-
-/**@GET Project by id */
-router.get('/:project_id', (req, res) => { 
-
-    Project.findAll({
-        where: { 
-            uuid: req.params.project_id
-        }
-    }).then(result =>  { 
-        return res.status(200).json(result);
-    }).catch(err => { 
-        console.log(err)
-        return res.status(500).send('Server Error');
-    })
-
-})
-
-
 
 
 /****************************************************************** */
