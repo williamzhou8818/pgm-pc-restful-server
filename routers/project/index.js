@@ -119,7 +119,7 @@ const express = require('express');
 const router = express.Router();
 const uuid  = require('uuid');
 const Project = require('../../models/Project'); 
-const FakeProjectModel =  require('../../models/FakeProjectModel');
+// const FakeProjectModel =  require('../../models/FakeProjectModel');
 
 const  {Op} = require('sequelize'); 
 
@@ -133,7 +133,6 @@ router.get('/get_project_by_ids', (req, res) => {
    
     if (req.body.data) {
  
-        // FakeProjectModel.findAll({
         Project.findAll({
             where: { 
                 [Op.or]: req.body.data
