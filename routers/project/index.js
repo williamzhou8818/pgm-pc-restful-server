@@ -133,7 +133,8 @@ router.get('/get_project_by_ids', (req, res) => {
    
     if (req.body.data) {
  
-        FakeProjectModel.findAll({
+        // FakeProjectModel.findAll({
+        Project.findAll({
             where: { 
                 [Op.or]: req.body.data
             }
@@ -175,8 +176,9 @@ router.get('/', (req, res) =>  {
 router.post('/', (req, res) => { 
     let _project = { 
         uuid: uuid.v4(), 
-        project_file: "https://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/Asymmetric%20Skirt02.pvd",
-        proj_profile: "https://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/Asymmetric%20Skirt02.png",
+        project_file: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/Asymmetric_Skirt02.pvd",
+        proj_profile: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/Asymmetric_Skirt02.png",
+        checked: false
     }
 
     //create a new recode to database

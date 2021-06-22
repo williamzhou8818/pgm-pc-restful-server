@@ -22,6 +22,10 @@ Project.init({
     proj_profile: { 
         type: Sequelize.STRING,
         allowNull: false
+    },
+    checked: {
+        type:Sequelize.BOOLEAN,
+        allowNull: false
     }
 
 }, { 
