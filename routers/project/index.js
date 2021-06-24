@@ -127,8 +127,7 @@ const  {Op} = require('sequelize');
 
 
 
-/**@GET Project by id */
-
+/**@GET Project by mutipal id */
 router.get('/get_project_by_ids', (req, res) => { 
    
     if (req.body.data) {
@@ -147,6 +146,22 @@ router.get('/get_project_by_ids', (req, res) => {
     }
 
 })
+
+/**@GET _Single style by: uuid */
+router.get('/:uuid', (req, res) => { 
+    Project.findAll({
+        where:{
+            uuid:req.params.uuid
+        }
+    }).then(result => { 
+        if (result) { 
+            return res.status(200).json(result);
+        }
+    }).catch(err => {
+        return res.status(500).send('Server Error');
+    })
+})
+
 
 
 /**@GET Fetch all the project */
