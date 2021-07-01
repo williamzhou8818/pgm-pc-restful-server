@@ -14,8 +14,30 @@ const ResButton = require('../../models/ResButton');
 const ResZip  =  require('../../models/ResZip');
 const ResStitch = require('../../models/ResStitch');
 const ResDeco  = require('../../models/ResDeco');
+const  {Op} = require('sequelize'); 
 
 /******************************************************************* */
+
+ /**@GET mutipal button uuid and return selected item */
+router.get('/res_button_by_ids', (req, res) => { 
+
+    if (req.body.data) {
+        ResButton.findAll({
+            where: {
+                [Op.or]:  req.body.data
+            }
+        }).then(result => {
+            return res.status(200).send(result);
+        }).catch(err => {
+            return res.status(500).send('Server Error');
+        })
+
+    }
+
+
+})
+
+/****end */
 
 
 /**
@@ -29,8 +51,6 @@ router.get('/', (req, res) =>  {
     // 3.resource_id [ ] ???
     // const {resource_type,  resource_id} = req.body;
     // can use resource_id to get single resource item
-
-    //
     
     let resource_data = { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [] };
     
@@ -122,9 +142,10 @@ router.get('/', (req, res) =>  {
 //create a fabric
 router.post('/res-fabric', (req, res) => { 
     let _fabric = {
-        uuid: uuid.v4(),
-        fab_url: "http://106.14.153.11:5500/.../fabric.fab",
-        fab_img_url: "http://106.14.153.11:5500/.../fabric.png"
+        uuid: "B3C6D66C-2D69-4694-A935-C8270EB41C12",
+        name: "尼丝纺",
+        fab_url: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/myFabricRes/B3C6D66C.fab",
+        fab_img_url: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/myFabricRes/F8CF9532.png"
     }
 
     ResFab.create(_fabric)

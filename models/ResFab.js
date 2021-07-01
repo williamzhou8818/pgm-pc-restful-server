@@ -18,6 +18,10 @@
         // autoIncrement: true, 
         allowNull: false 
     },
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     fab_url: {
         type: Sequelize.STRING,
         allowNull: false
