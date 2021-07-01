@@ -16,7 +16,21 @@ const ResStitch = require('../../models/ResStitch');
 const ResDeco  = require('../../models/ResDeco');
 const  {Op} = require('sequelize'); 
 
-/******************************************************************* */
+/******************************************************************* */ 
+  /**@GET mutipual resfab uuid and return selected item */
+router.get('/res_fab_by_ids', (req, res) => {
+    if (req.body.data) {
+        ResFab.findAll({
+            where: { 
+                [Op.or]: req.body.data
+            }
+        }).then(result => { 
+            return res.status(200).send(result);
+        }).catch(err => {
+            return  res.status(500).send('Server Error');
+        })
+    }
+})
 
  /**@GET mutipal button uuid and return selected item */
 router.get('/res_button_by_ids', (req, res) => { 
@@ -33,8 +47,6 @@ router.get('/res_button_by_ids', (req, res) => {
         })
 
     }
-
-
 })
 
 /****end */
