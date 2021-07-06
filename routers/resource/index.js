@@ -49,7 +49,25 @@ router.get('/res_button_by_ids', (req, res) => {
     }
 })
 
+/**@Get mutipal zipper uuid and return selected item */
+router.get('/res_zipper_by_ ids', (req, res) => {
+    if (req.body.data) {
+        ResZip.findAll({
+            where: {
+                [Op.or]:  req.body.data
+            }
+        }).then(result => {
+            return res.status(200).send(result);
+        }).catch(err => {
+            return res.status(500).send('Server Error');
+        })
+
+    }
+})
+
 /****end */
+
+
 
 
 /**
