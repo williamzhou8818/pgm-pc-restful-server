@@ -4,6 +4,21 @@ const swaggerUi = require("swagger-ui-express");
 const sequelize = require('./utils/database')
 const path = require('path');
 const multer = require('multer');
+const co = require('co');
+const OSS = require('ali-oss');
+var fs = require('fs');
+
+const ProjectM = require('./models/Project');
+
+const client = new OSS({
+  region: 'oss-cn-shanghai',
+  accessKeyId: 'LTAI4G4tqE9gYvgWzxXknjAu',
+  accessKeySecret: 'ddTXBZVakDj2UNdoQoChafs6PdSFC8',
+  bucket: 'pgm-aphro3d-server-uploads',
+  //endpoint: 'oss-cn-shanghai.aliyuncs.com',
+  endpoint: 'oss-accelerate.aliyuncs.com',
+})
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads')
@@ -78,18 +93,168 @@ app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-mod
 
 //***************************************************************************************************** */
 
-//Image upload test
-app.post('/upload', upload.single('notes'), function (req, res, next) {
+//Ava Project file test
+app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
-    console.log(req.file);
-    let image = {
-       // image_url:`http://${req.headers.host}/my-uploads/${req.file.path.replace("\\","/")}`
-       // image_url:`http://${req.headers.host}/my-uploads/${req.file.filename}`
+
+    if (req.file) { 
+        try {
+          const fileName = req.file.filename;
+          const filePath = req.file.path;      
+          
+          // console.log(fileName)
+          // console.log(filePath)
+
+          const result = await client.put(fileName, filePath.replace('\\','/'));
+          if (result) {
+            console.log(result)
+            ProjectM.findAll({where: {uuid: req.query.id}})
+              .then(pro => {
+                  if (!pro[0]){
+                    //Create a new prject item into project table
+                    let newPrj = { 
+                      uuid:req.query.id, 
+                      project_file: result.url,
+                      proj_profile: "http://pgm-aphro3d-server-uploads.oss-accelerate.aliyuncs.com/1625729574227-man.png",
+                      checked: false
+                    }
+
+                    ProjectM.create(newPrj)
+                      .then(result=> {
+                        if (result) {
+                          fs.unlink(filePath.replace('\\', '/'), (err) => {
+                            if (err) throw err;
+                            // if no error, file has been deleted successfully
+                            //console.log(result);
+                            console.log('File deleted!');
+                            // updet 
+                            return res.status(200).json({msg: "创建成功"});
+                          })
+                        }
+                      }).catch(err => console.log(err));    
+                      
+                    } else {
+                      //uplate current id project field
+                      ProjectM.update(
+                        {project_file: result.url},{
+                          where: { 
+                            uuid: req.query.id
+                          }
+                        }).then(result => { 
+                          //console.log(res[0]);
+                          if (result[0] === 1) {
+                            fs.unlink(filePath.replace('\\', '/'), (err) => {
+                              if (err) throw err;
+                              // if no error, file has been deleted successfully
+                              //console.log(result);
+                              console.log('File deleted!');
+                              // updet 
+                              return res.status(200).json({msg: "保存成功"});
+                            })
+                          }
+                        })
+                    }
+
+
+
+
+                  })
+          } 
+
+          // const result = await client.put
+
+        } catch (err) { 
+          console.log(err);
+          return res.status(400).json({msg: "Somthing wrong"});
+
+        }
 
     }
-    res.status(200).json(image)
+
+
+
+    // console.log(req.file);
+    // let image = {
+    //    // image_url:`http://${req.headers.host}/my-uploads/${req.file.path.replace("\\","/")}`
+    //    // image_url:`http://${req.headers.host}/my-uploads/${req.file.filename}`
+
+    // }
+    // res.status(200).json({msg: '保存成功'})
   })
+
+//Ava_img file upload test 
+app.post('/upload-img', upload.single('image'), async function (req, res, next) { 
+  console.log(req.file);
+  
+  if (req.file) { 
+    try {
+      const fileName = req.file.filename;
+      const filePath = req.file.path;
+      //console.log(filePath.replace('\\', '/'))
+      const result = await client.put(fileName, filePath.replace('\\', '/'));
+         
+        if (result) { 
+           console.log(result);   
+          ProjectM.findAll({where: {uuid: req.query.id}})
+          .then(pro =>  {
+              if (!pro[0]) {
+                //Create a new prject item into project table
+                let newPrj = { 
+                  uuid:req.query.id,
+                  project_file: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/A_Style_Skirt.pvd",
+                  proj_profile:  result.url,
+                  checked: false
+                }
+
+                ProjectM.create(newPrj)
+                  .then(result=> {
+                    if (result) {
+                      fs.unlink(filePath.replace('\\', '/'), (err) => {
+                        if (err) throw err;
+                        // if no error, file has been deleted successfully
+                        //console.log(result);
+                        console.log('File deleted!');
+                        // updet 
+                        return res.status(200).json({msg: "创建成功"});
+                      })
+                    }
+                  }).catch(err => console.log(err));                   
+
+              } else {
+                //uplate current id project field
+                ProjectM.update(
+                  {proj_profile: result.url},{
+                    where: { 
+                      uuid: req.query.id
+                    }
+                  }).then(result => { 
+                    //console.log(res[0]);
+                    if (result[0] === 1) {
+                      fs.unlink(filePath.replace('\\', '/'), (err) => {
+                        if (err) throw err;
+                        // if no error, file has been deleted successfully
+                        //console.log(result);
+                        console.log('File deleted!');
+                        // updet 
+                        return res.status(200).json({msg: "保存成功"});
+                      })
+                    }
+                  })
+              }
+   
+          })
+        }
+    } catch (e)  { 
+      console.log(e);
+      return res.status(400).json({msg: "Somthing wrong"});
+    }   
+  }
+  
+  // res.status(200).json({msg: "保存成功"});    
+})
+//***************************************************************************************************** */
+
 //main root
 app.use('/', (req, res) =>  {
     res.status(200).json({msg: 'Welcome to PGM Aphoro3D Api'});

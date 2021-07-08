@@ -66,7 +66,7 @@ router.get('/res_zipper_by_ids', (req, res) => {
 })
 
 /**@Get mutipal zipper uuid and return selected item */
-router.get('/res_avater_by_ids', (req, res) => { 
+router.get('/res_avatar_by_ids', (req, res) => { 
 
     if (req.body.data) {
         ResModel.findAll({
