@@ -63,7 +63,7 @@ app.use(express.urlencoded({limit: '520mb', extended:false}));
 //public folder
 let publicFolder = path.join(__dirname, 'public');
 let uploadsFolder = path.join(__dirname, 'uploads');
-app.use('/', express.static(publicFolder));
+app.use('/public', express.static(publicFolder));
 app.use('/my-uploads', express.static(uploadsFolder));
 
 //***************************************************************************************************** */
@@ -79,20 +79,19 @@ app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-mod
 //***************************************************************************************************** */
 
 //Image upload test
-app.post('/upload', upload.single('image'), function (req, res, next) {
+app.post('/upload', upload.single('notes'), function (req, res, next) {
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
     console.log(req.file);
     let image = {
        // image_url:`http://${req.headers.host}/my-uploads/${req.file.path.replace("\\","/")}`
-        image_url:`http://${req.headers.host}/my-uploads/${req.file.filename}`
+       // image_url:`http://${req.headers.host}/my-uploads/${req.file.filename}`
 
     }
     res.status(200).json(image)
   })
 //main root
 app.use('/', (req, res) =>  {
-
     res.status(200).json({msg: 'Welcome to PGM Aphoro3D Api'});
 });
 

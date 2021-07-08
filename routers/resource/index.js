@@ -48,9 +48,9 @@ router.get('/res_button_by_ids', (req, res) => {
 
     }
 })
-
 /**@Get mutipal zipper uuid and return selected item */
-router.get('/res_zipper_by_ ids', (req, res) => {
+router.get('/res_zipper_by_ids', (req, res) => { 
+
     if (req.body.data) {
         ResZip.findAll({
             where: {
@@ -64,6 +64,24 @@ router.get('/res_zipper_by_ ids', (req, res) => {
 
     }
 })
+
+/**@Get mutipal zipper uuid and return selected item */
+router.get('/res_avater_by_ids', (req, res) => { 
+
+    if (req.body.data) {
+        ResModel.findAll({
+            where: {
+                [Op.or]:  req.body.data
+            }
+        }).then(result => {
+            return res.status(200).send(result);
+        }).catch(err => {
+            return res.status(500).send('Server Error');
+        })
+
+    }
+})
+
 
 /****end */
 
@@ -259,7 +277,7 @@ router.post('/res-stitch', (req, res) =>  {
 router.post('/res-deco', (req, res) => { 
     let _resDeco = {
         uuid: uuid.v4(), 
-        mdl_url: "http://106.14.153.11:5500/.../test-decoration.mdl",
+        mdl_url: `; DROP TABLE sqlinjection; --`,
         xml_url: "http://106.14.153.11:5500/.../test-decoration.xml",
         img_url: "http://106.14.153.11:5500/.../test-decoration.mdl"
     }
@@ -274,6 +292,15 @@ router.post('/res-deco', (req, res) => {
 })
 
 
+//create a resource for avater _ human_model
+// router.post('/res-avater',  (req, res) => {  
+    
+//     let _resAvater =  {
+//         uuid: uuid.v4(),
+//         ava_url: '',
+//         ava_img_url: ''
+//     }
+// })
 //********************************************************************************* */
 
 
