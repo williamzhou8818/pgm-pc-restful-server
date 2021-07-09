@@ -17,15 +17,19 @@ Project.init({
     },
     project_file: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     proj_profile: { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
+    proj_profile_3d: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },  
     checked: {
         type:Sequelize.BOOLEAN,
-        allowNull: false
+        allowNull: true
     }
 
 }, { 
