@@ -97,6 +97,23 @@ router.get('/res_deco_by_id', (req, res) => {
     }
 })
 
+/**@Get mutipal Decoe uuid and return selected items */
+router.get('/res_stitch_by_id', (req, res) => {
+    if (req.body.data) {
+        ResStitch.findAll({
+            where: {
+                [Op.or]: req.body.data
+            }
+        }).then(result => {
+            return res.status(200).send(result);
+        }).catch(err => {
+            return res.status(500).send('Server Error');
+        })
+    }
+})
+
+
+
 /****end */
 
 
@@ -273,9 +290,8 @@ router.post('/res-zip', (req, res) => {
 router.post('/res-stitch', (req, res) =>  {
     let _resStitch = {
         uuid: uuid.v4(),
-        mdl_url: "http://106.14.153.11:5500/.../test-stitch.mdl",
-        xml_url: "http://106.14.153.11:5500/.../test-stitch.xml",
-        img_url: "http://106.14.153.11:5500/.../test-stitch.png"
+        mdl_url: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/myStitchRes/304.mdl",
+        img_url: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/myStitchRes/304.png"
     }
     ResStitch.create(_resStitch)
         .then(result =>  { 

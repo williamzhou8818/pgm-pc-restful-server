@@ -96,7 +96,7 @@ app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-mod
 //***************************************************************************************************** */
 
 //Ava Project file test
-app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
+app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
     const progress = (p, _checkpoint) => {

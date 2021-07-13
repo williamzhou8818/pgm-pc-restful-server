@@ -21,10 +21,6 @@
         type: Sequelize.STRING,
         allowNull: false
     },
-    xml_url: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }, 
     img_url:  { 
         type: Sequelize.STRING,
         allowNull: false
