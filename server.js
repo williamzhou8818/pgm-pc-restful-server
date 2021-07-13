@@ -16,7 +16,7 @@ const client = new OSS({
   accessKeySecret: 'ddTXBZVakDj2UNdoQoChafs6PdSFC8',
   bucket: 'pgm-aphro3d-server-uploads',
   //endpoint: 'oss-cn-shanghai.aliyuncs.com',
-  endpoint: 'oss-accelerate.aliyuncs.com',
+  endpoint: 'oss-accelerate.aliyuncs.com'
 })
 
 var storage = multer.diskStorage({
@@ -28,7 +28,9 @@ var storage = multer.diskStorage({
     }
   })
    
-const upload = multer({ storage: storage});
+const upload = multer(
+  { storage: storage}
+);
 const app = express();
 const cors = require('cors');       
 
@@ -97,8 +99,18 @@ app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-mod
 app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
+    const progress = (p, _checkpoint) => {
+      console.log(p); // Object的上传进度。
+      console.log(_checkpoint); // 分片上传的断点信息。
+    };
 
+     
     if (req.file) { 
+     
+      setTimeout(() => {
+        return  res.status(200).json({msg: "保存成功"});
+       }, 2000);
+       
         try {
           const fileName = req.file.filename;
           const filePath = req.file.path;      
@@ -106,16 +118,27 @@ app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
           // console.log(fileName)
           // console.log(filePath)
 
-          const result = await client.put(fileName, filePath.replace('\\','/'));
-          if (result) {
-            console.log(result)
+          const result = await client.multipartUpload(fileName, filePath.replace('\\','/'), {
+            progress,
+            meta: {
+              year: 2021,
+              people: 'test',
+            },
+          });
+           // console.log(result);
+          //const head =  await client.head('')
+          if (result.res.statusMessage === 'OK') {
+            console.log(result.res)
+            let _uploadFilePath = result.res.requestUrls[0].split('?')
+            console.log(_uploadFilePath)
+        
             ProjectM.findAll({where: {uuid: req.query.id}})
               .then(pro => {
                   if (!pro[0]){
                     //Create a new prject item into project table
                     let newPrj = { 
                       uuid:req.query.id, 
-                      project_file: result.url,
+                      project_file: _uploadFilePath[0],
                       checked: false
                     }
 
@@ -128,7 +151,7 @@ app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
                             //console.log(result);
                             console.log('File deleted!');
                             // updet 
-                            return res.status(200).json({msg: "创建成功"});
+                            //  return res.status(200).json({msg: "创建成功"});
                           })
                         }
                       }).catch(err => console.log(err));    
@@ -136,7 +159,7 @@ app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
                     } else {
                       //uplate current id project field
                       ProjectM.update(
-                        {project_file: result.url},{
+                        {project_file: _uploadFilePath[0]},{
                           where: { 
                             uuid: req.query.id
                           }
@@ -149,7 +172,7 @@ app.post('/upload', upload.single('ava_file'),async function (req, res, next) {
                               //console.log(result);
                               console.log('File deleted!');
                               // updet 
-                              return res.status(200).json({msg: "保存成功"});
+                             // return res.status(200).json({msg: "保存成功"});
                             })
                           }
                         })

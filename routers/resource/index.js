@@ -82,6 +82,20 @@ router.get('/res_avatar_by_ids', (req, res) => {
     }
 })
 
+/**@Get mutipal Decoe uuid and return selected items */
+router.get('/res_deco_by_id', (req, res) => {
+    if (req.body.data) {
+        ResDeco.findAll({
+            where: {
+                [Op.or]: req.body.data
+            }
+        }).then(result => {
+            return res.status(200).send(result);
+        }).catch(err => {
+            return res.status(500).send('Server Error');
+        })
+    }
+})
 
 /****end */
 
@@ -277,9 +291,8 @@ router.post('/res-stitch', (req, res) =>  {
 router.post('/res-deco', (req, res) => { 
     let _resDeco = {
         uuid: uuid.v4(), 
-        mdl_url: `; DROP TABLE sqlinjection; --`,
-        xml_url: "http://106.14.153.11:5500/.../test-decoration.xml",
-        img_url: "http://106.14.153.11:5500/.../test-decoration.mdl"
+        drc_url: 'http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/myDecoRes/Bag%20handle_01.dcr',
+        img_url: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/myDecoRes/Bag%20handle_01.png"
     }
 
     ResDeco.create(_resDeco)

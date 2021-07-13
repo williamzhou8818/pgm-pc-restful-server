@@ -17,11 +17,7 @@
         type: Sequelize.STRING,
         allowNull: false 
     },
-    mdl_url: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    xml_url: {
+    drc_url: {
         type: Sequelize.STRING,
         allowNull: false
     }, 
