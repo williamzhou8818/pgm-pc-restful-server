@@ -189,7 +189,8 @@ router.get('/', (req, res) =>  {
 //create a new pc projects 
 router.post('/', (req, res) => { 
     let _project = { 
-        uuid: uuid.v4(), 
+        uuid: uuid.v4(),
+        name: "款式一",
         project_file: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/Asymmetric_Skirt02.pvd",
         proj_profile: "http://aphro3d-web-pc-uploads.oss-cn-shanghai.aliyuncs.com/Asymmetric_Skirt02.png",
         checked: false

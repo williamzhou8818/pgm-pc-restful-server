@@ -138,6 +138,7 @@ app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
                     //Create a new prject item into project table
                     let newPrj = { 
                       uuid:req.query.id, 
+                      name: req.body.name,
                       project_file: _uploadFilePath[0],
                       checked: false
                     }
@@ -159,7 +160,7 @@ app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
                     } else {
                       //uplate current id project field
                       ProjectM.update(
-                        {project_file: _uploadFilePath[0]},{
+                        {project_file: _uploadFilePath[0], name: req.body.name},{
                           where: { 
                             uuid: req.query.id
                           }
@@ -224,6 +225,7 @@ app.post('/upload-img', upload.single('image'), async function (req, res, next) 
                 //Create a new prject item into project table
                 let newPrj = { 
                   uuid:req.query.id,
+                  name: req.body.name,
                   proj_profile:  result.url,
                   checked: false
                 }
@@ -245,7 +247,7 @@ app.post('/upload-img', upload.single('image'), async function (req, res, next) 
               } else {
                 //uplate current id project field
                 ProjectM.update(
-                  {proj_profile: result.url},{
+                  {proj_profile: result.url,  name: req.body.name },{
                     where: { 
                       uuid: req.query.id
                     }
@@ -293,7 +295,8 @@ app.post('/upload-img3d',  upload.single('image3d'), async function(req, res, ne
               if (!pro[0]) {
                 //Create a new prject item into project table
                 let newPrj = { 
-                  uuid:req.query.id,
+                  uuid: req.query.id,
+                  name: req.body.name,
                   proj_profile_3d: result.url,
                   checked: false
                 }
@@ -315,7 +318,7 @@ app.post('/upload-img3d',  upload.single('image3d'), async function(req, res, ne
               } else {
                 //uplate current id project field
                 ProjectM.update(
-                  {proj_profile_3d: result.url},{
+                  {proj_profile_3d: result.url, name: req.body.name},{
                     where: { 
                       uuid: req.query.id
                     }

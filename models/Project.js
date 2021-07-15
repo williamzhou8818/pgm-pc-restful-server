@@ -15,6 +15,10 @@ Project.init({
         // autoIncrement: true, 
         allowNull: false 
     },
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     project_file: {
         type: Sequelize.STRING,
         allowNull: true
