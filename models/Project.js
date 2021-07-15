@@ -15,15 +15,23 @@ Project.init({
         // autoIncrement: true, 
         allowNull: false 
     },
-    name: {
+    project_file_name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     project_file: {
         type: Sequelize.STRING,
         allowNull: true
     },
+    proj_profile_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     proj_profile: { 
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    proj_profile_3d_name: {
         type: Sequelize.STRING,
         allowNull: true
     },
