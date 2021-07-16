@@ -95,6 +95,31 @@ app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-mod
 
 //***************************************************************************************************** */
 
+
+//init new projects
+app.post('/init-project-tb', (req, res) => { 
+   //res.json(req.query.id);
+   let newPrj = { 
+    uuid:req.query.id, 
+    checked: false
+   }
+
+   ProjectM.findAll({where: {uuid: req.query.id}})
+    .then(pro =>  {
+      if (pro[0]) return  res.status(400).json({msg:'data already exiting'});
+    
+      ProjectM.create(newPrj)
+      .then(pro=> {
+        if (pro) {
+          return  res.status(200).json({msg:'data has been created'});
+        }
+      }).catch(err => console.log(err));   
+      
+    })
+   
+
+})
+
 //Ava Project file test
 app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
     // req.file is the `avatar` file
@@ -131,58 +156,78 @@ app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
             console.log(result.res)
             let _uploadFilePath = result.res.requestUrls[0].split('?')
             console.log(_uploadFilePath)
+
+            //uplate current id project field
+            ProjectM.update(
+            {project_file: _uploadFilePath[0], project_file_name: req.body.project_file_name},{
+              where: { 
+                uuid: req.query.id
+              }
+            }).then(result => { 
+              //console.log(res[0]);
+              if (result[0] === 1) {
+                fs.unlink(filePath.replace('\\', '/'), (err) => {
+                  if (err) throw err;
+                  // if no error, file has been deleted successfully
+                  //console.log(result);
+                  console.log('File deleted!');
+                  // updet 
+                  // return res.status(200).json({msg: "保存成功"});
+                })
+              }
+            })
         
-            ProjectM.findAll({where: {uuid: req.query.id}})
-              .then(pro => {
-                  if (!pro[0]){
-                    //Create a new prject item into project table
-                    let newPrj = { 
-                      uuid:req.query.id, 
-                      project_file_name: req.body.project_file_name,
-                      project_file: _uploadFilePath[0],
-                      checked: false
-                    }
+            // ProjectM.findAll({where: {uuid: req.query.id}})
+            //   .then(pro => {
+            //       if (!pro[0]){
+            //         //Create a new prject item into project table
+            //         let newPrj = { 
+            //           uuid:req.query.id, 
+            //           project_file_name: req.body.project_file_name,
+            //           project_file: _uploadFilePath[0],
+            //           checked: false
+            //         }
 
-                    ProjectM.create(newPrj)
-                      .then(result=> {
-                        if (result) {
-                          fs.unlink(filePath.replace('\\', '/'), (err) => {
-                            if (err) throw err;
-                            // if no error, file has been deleted successfully
-                            //console.log(result);
-                            console.log('File deleted!');
-                            // updet 
-                            //  return res.status(200).json({msg: "创建成功"});
-                          })
-                        }
-                      }).catch(err => console.log(err));    
+            //         ProjectM.create(newPrj)
+            //           .then(result=> {
+            //             if (result) {
+            //               fs.unlink(filePath.replace('\\', '/'), (err) => {
+            //                 if (err) throw err;
+            //                 // if no error, file has been deleted successfully
+            //                 //console.log(result);
+            //                 console.log('File deleted!');
+            //                 // updet 
+            //                 //  return res.status(200).json({msg: "创建成功"});
+            //               })
+            //             }
+            //           }).catch(err => console.log(err));    
                       
-                    } else {
-                      //uplate current id project field
-                      ProjectM.update(
-                        {project_file: _uploadFilePath[0], project_file_name: req.body.project_file_name},{
-                          where: { 
-                            uuid: req.query.id
-                          }
-                        }).then(result => { 
-                          //console.log(res[0]);
-                          if (result[0] === 1) {
-                            fs.unlink(filePath.replace('\\', '/'), (err) => {
-                              if (err) throw err;
-                              // if no error, file has been deleted successfully
-                              //console.log(result);
-                              console.log('File deleted!');
-                              // updet 
-                             // return res.status(200).json({msg: "保存成功"});
-                            })
-                          }
-                        })
-                    }
+            //         } else {
+            //           //uplate current id project field
+            //           ProjectM.update(
+            //             {project_file: _uploadFilePath[0], project_file_name: req.body.project_file_name},{
+            //               where: { 
+            //                 uuid: req.query.id
+            //               }
+            //             }).then(result => { 
+            //               //console.log(res[0]);
+            //               if (result[0] === 1) {
+            //                 fs.unlink(filePath.replace('\\', '/'), (err) => {
+            //                   if (err) throw err;
+            //                   // if no error, file has been deleted successfully
+            //                   //console.log(result);
+            //                   console.log('File deleted!');
+            //                   // updet 
+            //                  // return res.status(200).json({msg: "保存成功"});
+            //                 })
+            //               }
+            //             })
+            //         }
 
 
 
 
-                  })
+              //    })
           } 
 
           // const result = await client.put
@@ -219,54 +264,73 @@ app.post('/upload-img', upload.single('image'), async function (req, res, next) 
          
         if (result) { 
            console.log(result);   
-          ProjectM.findAll({where: {uuid: req.query.id}})
-          .then(pro =>  {
-              if (!pro[0]) {
-                //Create a new prject item into project table
-                let newPrj = { 
-                  uuid:req.query.id,
-                  proj_profile_name: req.body.proj_profile_name,
-                  proj_profile:  result.url,
-                  checked: false
-                }
-
-                ProjectM.create(newPrj)
-                  .then(result=> {
-                    if (result) {
-                      fs.unlink(filePath.replace('\\', '/'), (err) => {
-                        if (err) throw err;
-                        // if no error, file has been deleted successfully
-                        //console.log(result);
-                        console.log('File deleted!');
-                        // updet 
-                        return res.status(200).json({msg: "创建成功"});
-                      })
-                    }
-                  }).catch(err => console.log(err));                   
-
-              } else {
-                //uplate current id project field
-                ProjectM.update(
-                  {proj_profile: result.url,  proj_profile_name: req.body.proj_profile_name },{
-                    where: { 
-                      uuid: req.query.id
-                    }
-                  }).then(result => { 
-                    //console.log(res[0]);
-                    if (result[0] === 1) {
-                      fs.unlink(filePath.replace('\\', '/'), (err) => {
-                        if (err) throw err;
-                        // if no error, file has been deleted successfully
-                        //console.log(result);
-                        console.log('File deleted!');
-                        // updet 
-                        return res.status(200).json({msg: "保存成功"});
-                      })
-                    }
-                  })
+                           //uplate current id project field
+            ProjectM.update(
+            {proj_profile: result.url,  proj_profile_name: req.body.proj_profile_name },{
+              where: { 
+                uuid: req.query.id
               }
+            }).then(result => { 
+              //console.log(res[0]);
+              if (result[0] === 1) {
+                fs.unlink(filePath.replace('\\', '/'), (err) => {
+                  if (err) throw err;
+                  // if no error, file has been deleted successfully
+                  //console.log(result);
+                  console.log('File deleted!');
+                  // updet 
+                  return res.status(200).json({msg: "保存成功"});
+                })
+              }
+            })
+          // ProjectM.findAll({where: {uuid: req.query.id}})
+          // .then(pro =>  {
+          //     if (!pro[0]) {
+          //       //Create a new prject item into project table
+          //       let newPrj = { 
+          //         uuid:req.query.id,
+          //         proj_profile_name: req.body.proj_profile_name,
+          //         proj_profile:  result.url,
+          //         checked: false
+          //       }
+
+          //       ProjectM.create(newPrj)
+          //         .then(result=> {
+          //           if (result) {
+          //             fs.unlink(filePath.replace('\\', '/'), (err) => {
+          //               if (err) throw err;
+          //               // if no error, file has been deleted successfully
+          //               //console.log(result);
+          //               console.log('File deleted!');
+          //               // updet 
+          //               return res.status(200).json({msg: "创建成功"});
+          //             })
+          //           }
+          //         }).catch(err => console.log(err));                   
+
+          //     } else {
+          //       //uplate current id project field
+          //       ProjectM.update(
+          //         {proj_profile: result.url,  proj_profile_name: req.body.proj_profile_name },{
+          //           where: { 
+          //             uuid: req.query.id
+          //           }
+          //         }).then(result => { 
+          //           //console.log(res[0]);
+          //           if (result[0] === 1) {
+          //             fs.unlink(filePath.replace('\\', '/'), (err) => {
+          //               if (err) throw err;
+          //               // if no error, file has been deleted successfully
+          //               //console.log(result);
+          //               console.log('File deleted!');
+          //               // updet 
+          //               return res.status(200).json({msg: "保存成功"});
+          //             })
+          //           }
+          //         })
+          //     }
    
-          })
+          // })
         }
     } catch (e)  { 
       console.log(e);
@@ -289,55 +353,74 @@ app.post('/upload-img3d',  upload.single('image3d'), async function(req, res, ne
       const result = await client.put(fileName, filePath.replace('\\', '/'));
          
         if (result) { 
-           console.log(result);   
-          ProjectM.findAll({where: {uuid: req.query.id}})
-          .then(pro =>  {
-              if (!pro[0]) {
-                //Create a new prject item into project table
-                let newPrj = { 
-                  uuid: req.query.id,
-                  proj_profile_3d_name: req.body.proj_profile_3d_name,
-                  proj_profile_3d: result.url,
-                  checked: false
-                }
+           console.log(result); 
+          //uplate current id project field
+          ProjectM.update(
+          {proj_profile_3d: result.url, proj_profile_3d_name: req.body.proj_profile_3d_name},{
+            where: { 
+              uuid: req.query.id
+            }
+          }).then(result => { 
+            //console.log(res[0]);
+            if (result[0] === 1) {
+              fs.unlink(filePath.replace('\\', '/'), (err) => {
+                if (err) throw err;
+                // if no error, file has been deleted successfully
+                //console.log(result);
+                console.log('File deleted!');
+                // updet 
+                return res.status(200).json({msg: "保存成功"});
+              })
+            }
+          })  
+          // ProjectM.findAll({where: {uuid: req.query.id}})
+          // .then(pro =>  {
+          //     if (!pro[0]) {
+          //       //Create a new prject item into project table
+          //       let newPrj = { 
+          //         uuid: req.query.id,
+          //         proj_profile_3d_name: req.body.proj_profile_3d_name,
+          //         proj_profile_3d: result.url,
+          //         checked: false
+          //       }
 
-                ProjectM.create(newPrj)
-                  .then(result=> {
-                    if (result) {
-                      fs.unlink(filePath.replace('\\', '/'), (err) => {
-                        if (err) throw err;
-                        // if no error, file has been deleted successfully
-                        //console.log(result);
-                        console.log('File deleted!');
-                        // updet 
-                        return res.status(200).json({msg: "创建成功"});
-                      })
-                    }
-                  }).catch(err => console.log(err));                   
+          //       ProjectM.create(newPrj)
+          //         .then(result=> {
+          //           if (result) {
+          //             fs.unlink(filePath.replace('\\', '/'), (err) => {
+          //               if (err) throw err;
+          //               // if no error, file has been deleted successfully
+          //               //console.log(result);
+          //               console.log('File deleted!');
+          //               // updet 
+          //               return res.status(200).json({msg: "创建成功"});
+          //             })
+          //           }
+          //         }).catch(err => console.log(err));                   
 
-              } else {
-                //uplate current id project field
-                ProjectM.update(
-                  {proj_profile_3d: result.url, proj_profile_3d_name: req.body.proj_profile_3d_name},{
-                    where: { 
-                      uuid: req.query.id
-                    }
-                  }).then(result => { 
-                    //console.log(res[0]);
-                    if (result[0] === 1) {
-                      fs.unlink(filePath.replace('\\', '/'), (err) => {
-                        if (err) throw err;
-                        // if no error, file has been deleted successfully
-                        //console.log(result);
-                        console.log('File deleted!');
-                        // updet 
-                        return res.status(200).json({msg: "保存成功"});
-                      })
-                    }
-                  })
-              }
+          //     } else {
+          //       //uplate current id project field
+          //       ProjectM.update(
+          //         {proj_profile_3d: result.url, proj_profile_3d_name: req.body.proj_profile_3d_name},{
+          //           where: { 
+          //             uuid: req.query.id
+          //           }
+          //         }).then(result => { 
+          //           //console.log(res[0]);
+          //           if (result[0] === 1) {
+          //             fs.unlink(filePath.replace('\\', '/'), (err) => {
+          //               if (err) throw err;
+          //               // if no error, file has been deleted successfully
+          //               //console.log(result);
+          //               console.log('File deleted!');
+          //               // updet 
+          //               return res.status(200).json({msg: "保存成功"});
+          //             })
+          //           }
+          //         })
+          //     }
    
-          })
+          // })
         }
     } catch (e)  { 
       console.log(e);
