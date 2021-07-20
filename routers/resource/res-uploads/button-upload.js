@@ -4,6 +4,7 @@ const ResBtn = require('./../../../models/ResButton');
 const multer =  require('multer');
 const OSS = require('ali-oss');
 const fs = require('fs');
+const auth = require('../../../middleware/auth');
 
 const client = new OSS({
     region: 'oss-cn-shanghai',
@@ -34,7 +35,7 @@ const uploadResBtn = multer(
 );
 
 
-router.post('/init-tb', (req, res) => { 
+router.post('/init-tb', auth, (req, res) => { 
     
     let newBtn =  { 
         uuid: req.query.id
@@ -55,7 +56,7 @@ router.post('/init-tb', (req, res) => {
 
 
 //upload btn mdl
-router.post('/upload-mdl', uploadResBtn.single('btn_mdl_file'), async (req, res) =>  { 
+router.post('/upload-mdl', auth, uploadResBtn.single('btn-mdl-file'), async (req, res) =>  { 
     //req.auth user id tto maike  as folder id 
     console.log(req.file);
     if (req.file) {
@@ -63,7 +64,7 @@ router.post('/upload-mdl', uploadResBtn.single('btn_mdl_file'), async (req, res)
         try {
             let fileName  = req.file.filename;
             let filePath = req.file.path;
-            const result =  await client.put('res-button/'+ fileName, filePath.replace('\\', '/'));
+            const result =  await client.put('res-button/'+ req.id +'/' + fileName, filePath.replace('\\', '/'));
             if (result) {
                 console.log(result);
                 ResBtn.update(
@@ -97,7 +98,7 @@ router.post('/upload-mdl', uploadResBtn.single('btn_mdl_file'), async (req, res)
 
 
 //btn-res upload xml file
-router.post('/upload-btn', uploadResBtn.single('res-btn-file'), async (req, res) => { 
+router.post('/upload-btn', auth, uploadResBtn.single('res-btn-file'), async (req, res) => { 
     
     if (req.file) { 
         console.log(req.file);
@@ -106,7 +107,7 @@ router.post('/upload-btn', uploadResBtn.single('res-btn-file'), async (req, res)
             let fileName = req.file.filename; 
             let filePath = req.file.path;
 
-            const  result = await client.put('res-button/'+fileName, filePath.replace('\\', '/'));
+            const  result = await client.put('res-button/' + req.id + "/" + fileName, filePath.replace('\\', '/'));
 
             if (result) { 
                 console.log(result);
@@ -146,7 +147,7 @@ router.post('/upload-btn', uploadResBtn.single('res-btn-file'), async (req, res)
 
 
 //btn-img_url
-router.post('/upload-btn-img', uploadResBtn.single('res-btn-img'), async (req, res) => { 
+router.post('/upload-btn-img', auth, uploadResBtn.single('res-btn-img'), async (req, res) => { 
     
     if (req.file) { 
         console.log(req.file);
@@ -155,7 +156,7 @@ router.post('/upload-btn-img', uploadResBtn.single('res-btn-img'), async (req, r
             let fileName = req.file.filename; 
             let filePath = req.file.path;
 
-            const  result = await client.put('res-button/'+fileName, filePath.replace('\\', '/'));
+            const  result = await client.put('res-button/'+ req.id + "/" + fileName, filePath.replace('\\', '/'));
 
             if (result) { 
                 console.log(result);

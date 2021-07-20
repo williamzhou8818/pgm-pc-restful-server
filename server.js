@@ -92,7 +92,7 @@ app.use('/api/v1/user', require('./routers/user'));
 app.use('/api/v1/project', require('./routers/project'));
 app.use('/api/v1/resource', require('./routers/resource'));
 app.use('/api/v1/res-btn-upload', require('./routers/resource/res-uploads/button-upload'));
-
+app.use('/api/v1/res-deco-upload', require('./routers/resource/res-uploads/decoration-upload'));
 //testing 
 app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-model'));
 
