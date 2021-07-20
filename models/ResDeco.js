@@ -17,13 +17,21 @@
         type: Sequelize.STRING,
         allowNull: false 
     },
+    drc_name: { 
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     drc_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     }, 
+    img_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     img_url:  { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     }
  },{
     sequelize, 

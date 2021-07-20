@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ResDeco = require('../../../models/ResDeco');
+const ResAvatar = require('../../../models/ResModel');
 const multer =  require('multer');
 const OSS = require('ali-oss');
 const fs = require('fs');
@@ -17,7 +17,7 @@ const client = new OSS({
     //endpoint: 'oss-cn-shanghai.aliyuncs.com',
     endpoint: 'oss-accelerate.aliyuncs.com'
 })
-var storageDeco =  multer.diskStorage({
+var storageAvatar =  multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads')
     },
@@ -25,43 +25,43 @@ var storageDeco =  multer.diskStorage({
         cb(null, Date.now() + "-" + file.originalname)
     }
 })
-const uploadResDeco = multer(
-    { storage: storageDeco }
+const uploadResAvatar = multer(
+    { storage: storageAvatar }
 );
 
 router.post('/init-tb', auth, (req, res) => { 
-    let newDeco = {
+    let newAva = {
         uuid: req.query.id
     }
 
-    ResDeco.findAll({where: {uuid: req.query.id}})
-        .then(deco => {
-            if(deco[0]) return res.status(400).json({msg: 'resource data already exiting'});
+    ResAvatar.findAll({where: {uuid: req.query.id}})
+        .then(avatar => {
+            if(avatar[0]) return res.status(400).json({msg: 'resource data already exiting'});
 
-            ResDeco.create(newDeco)
-            .then(myResDeco => {
-                if (myResDeco) {
-                    return res.status(200).json({msg: 'resource decoration table has been success created!'});
+            ResAvatar.create(newAva)
+            .then(myResAva => {
+                if (myResAva) {
+                    return res.status(200).json({msg: 'resource avatar table has been success created!'});
                 }
             }).catch(err => console.log(err));
         })
 
 })
 
-router.post('/upload-drc', auth, uploadResDeco.single('drc_file') , async(req, res) =>  { 
+router.post('/upload-ava', auth, uploadResAvatar.single('ava-file') , async(req, res) =>  { 
 
     if (req.file) {
     
         try { 
             let fileName  = req.file.filename;
             let filePath = req.file.path;
-            const result =  await client.put('res-deco/'+ req.id +'/' + fileName, filePath.replace('\\', '/'));
+            const result =  await client.put('res-avatar/'+ req.id +'/' + fileName, filePath.replace('\\', '/'));
             if (result) { 
                 console.log(result);
-                ResDeco.update(
+                ResAvatar.update(
                     {
-                        drc_name: req.body.drc_file_name,  
-                        drc_url: result.url 
+                        ava_name: req.body.ava_file_name,  
+                        ava_url: result.url 
                     },
                     {
                         where: { 
@@ -90,7 +90,7 @@ router.post('/upload-drc', auth, uploadResDeco.single('drc_file') , async(req, r
 
 })
 
-router.post('/upload-img', auth, uploadResDeco.single('deco-img'), async (req, res) => {
+router.post('/upload-img', auth, uploadResAvatar.single('ava-img'), async (req, res) => {
 
     if (req.file) { 
         console.log(req.file);
@@ -99,14 +99,14 @@ router.post('/upload-img', auth, uploadResDeco.single('deco-img'), async (req, r
             let fileName = req.file.filename; 
             let filePath = req.file.path;
 
-            const  result = await client.put('res-deco/'+ req.id + "/" + fileName, filePath.replace('\\', '/'));
+            const  result = await client.put('res-avatar/'+ req.id + "/" + fileName, filePath.replace('\\', '/'));
 
             if (result) { 
-                console.log(result);
-                ResDeco.update(
+                console.log(result);    
+                ResAvatar.update(
                     {
-                        img_name: req.body.deoc_img_name,  
-                        img_url: result.url 
+                        img_name: req.body.ava_img_name,  
+                        ava_img_url: result.url 
                     },
                     {
                         where: { 

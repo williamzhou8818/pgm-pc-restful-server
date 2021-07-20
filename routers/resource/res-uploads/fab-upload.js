@@ -1,6 +1,9 @@
+
+
+
 const express = require('express');
 const router = express.Router();
-const ResDeco = require('../../../models/ResDeco');
+const ResFab = require('../../../models/ResFab');
 const multer =  require('multer');
 const OSS = require('ali-oss');
 const fs = require('fs');
@@ -17,7 +20,7 @@ const client = new OSS({
     //endpoint: 'oss-cn-shanghai.aliyuncs.com',
     endpoint: 'oss-accelerate.aliyuncs.com'
 })
-var storageDeco =  multer.diskStorage({
+var storageFab =  multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads')
     },
@@ -25,43 +28,43 @@ var storageDeco =  multer.diskStorage({
         cb(null, Date.now() + "-" + file.originalname)
     }
 })
-const uploadResDeco = multer(
-    { storage: storageDeco }
+const uploadResFab = multer(
+    { storage: storageFab }
 );
 
 router.post('/init-tb', auth, (req, res) => { 
-    let newDeco = {
+    let newFab = {
         uuid: req.query.id
     }
 
-    ResDeco.findAll({where: {uuid: req.query.id}})
-        .then(deco => {
-            if(deco[0]) return res.status(400).json({msg: 'resource data already exiting'});
+    ResFab.findAll({where: {uuid: req.query.id}})
+        .then(fab => {
+            if(fab[0]) return res.status(400).json({msg: 'resource data already exiting'});
 
-            ResDeco.create(newDeco)
-            .then(myResDeco => {
-                if (myResDeco) {
-                    return res.status(200).json({msg: 'resource decoration table has been success created!'});
+            ResFab.create(newFab)
+            .then(myResFab => {
+                if (myResFab) {
+                    return res.status(200).json({msg: 'resource fab table has been success created!'});
                 }
             }).catch(err => console.log(err));
         })
 
 })
 
-router.post('/upload-drc', auth, uploadResDeco.single('drc_file') , async(req, res) =>  { 
+router.post('/upload-fab', auth, uploadResFab.single('fab-file') , async(req, res) =>  { 
 
     if (req.file) {
     
         try { 
             let fileName  = req.file.filename;
             let filePath = req.file.path;
-            const result =  await client.put('res-deco/'+ req.id +'/' + fileName, filePath.replace('\\', '/'));
+            const result =  await client.put('res-fab/'+ req.id +'/' + fileName, filePath.replace('\\', '/'));
             if (result) { 
                 console.log(result);
-                ResDeco.update(
+                ResFab.update(
                     {
-                        drc_name: req.body.drc_file_name,  
-                        drc_url: result.url 
+                        name: req.body.fab_file_name,  
+                        fab_url: result.url 
                     },
                     {
                         where: { 
@@ -90,7 +93,7 @@ router.post('/upload-drc', auth, uploadResDeco.single('drc_file') , async(req, r
 
 })
 
-router.post('/upload-img', auth, uploadResDeco.single('deco-img'), async (req, res) => {
+router.post('/upload-img', auth, uploadResFab.single('fab-img'), async (req, res) => {
 
     if (req.file) { 
         console.log(req.file);
@@ -99,14 +102,14 @@ router.post('/upload-img', auth, uploadResDeco.single('deco-img'), async (req, r
             let fileName = req.file.filename; 
             let filePath = req.file.path;
 
-            const  result = await client.put('res-deco/'+ req.id + "/" + fileName, filePath.replace('\\', '/'));
+            const  result = await client.put('res-fab/'+ req.id + "/" + fileName, filePath.replace('\\', '/'));
 
             if (result) { 
                 console.log(result);
-                ResDeco.update(
+                ResFab.update(
                     {
-                        img_name: req.body.deoc_img_name,  
-                        img_url: result.url 
+                        img_name: req.body.fab_img_name,  
+                        fab_img_url: result.url
                     },
                     {
                         where: { 

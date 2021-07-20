@@ -17,13 +17,21 @@
         type: Sequelize.STRING,
         allowNull: false 
     },
+    ava_name: { 
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     ava_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
+    },
+    img_name: { 
+        type: Sequelize.STRING,
+        allowNull: true
     },
     ava_img_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     }
  },{
     sequelize, 

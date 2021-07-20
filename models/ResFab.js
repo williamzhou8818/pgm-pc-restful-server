@@ -16,19 +16,23 @@
     uuid: {
         type: Sequelize.STRING,
         // autoIncrement: true, 
-        allowNull: false 
+        allowNull: false
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     fab_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
+    img_name:  {
+        type: Sequelize.STRING,
+        allowNull: true
+    },  
     fab_img_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     }
  },{
     sequelize, 

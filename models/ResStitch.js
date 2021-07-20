@@ -17,13 +17,21 @@
         type: Sequelize.STRING,
         allowNull: false 
     },
+    mdl_name: { 
+        type: Sequelize.STRING,
+        allowNull: true
+    }, 
     mdl_url: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
+    img_name: { 
+        type: Sequelize.STRING,
+        allowNull: true
+    }, 
     img_url:  { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     }
  },{
     sequelize, 

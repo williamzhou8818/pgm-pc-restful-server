@@ -93,6 +93,10 @@ app.use('/api/v1/project', require('./routers/project'));
 app.use('/api/v1/resource', require('./routers/resource'));
 app.use('/api/v1/res-btn-upload', require('./routers/resource/res-uploads/button-upload'));
 app.use('/api/v1/res-deco-upload', require('./routers/resource/res-uploads/decoration-upload'));
+app.use('/api/v1/res-fab-upload', require('./routers/resource/res-uploads/fab-upload'));
+app.use('/api/v1/res-ava-upload', require('./routers/resource/res-uploads/avatar-upload'));
+app.use('/api/v1/res-stitch-upload', require('./routers/resource/res-uploads/stitch-upload'));
+app.use('/api/v1/res-zip-upload', require('./routers/resource/res-uploads/zip-upload'));
 //testing 
 app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-model'));
 
