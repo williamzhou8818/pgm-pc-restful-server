@@ -9,11 +9,8 @@ module.exports  = function(req, res, next) {
 
     try { 
         const decoded = jwt.verify(token, 'dogrRun');
-        req.user = decoded.user;
-        req.full_name = decoded.full_name;
-        req.company = decoded.company;
-        req.currentAuthority = decoded.currentAuthority;
-        req.te_identifier_id = decoded.te_identifier_id;
+        req.id  =  decoded.userpc.id;
+        req.full_name = decoded.userpc.full_name;
 
         next();
     } catch (err) {

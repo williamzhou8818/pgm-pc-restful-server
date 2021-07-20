@@ -8,6 +8,8 @@ const co = require('co');
 const OSS = require('ali-oss');
 var fs = require('fs');
 
+const auth = require('./middleware/auth');
+
 const ProjectM = require('./models/Project');
 
 const client = new OSS({
@@ -89,6 +91,7 @@ app.use('/api/v1/auth', require('./routers/auth'));
 app.use('/api/v1/user', require('./routers/user'));
 app.use('/api/v1/project', require('./routers/project'));
 app.use('/api/v1/resource', require('./routers/resource'));
+app.use('/api/v1/res-btn-upload', require('./routers/resource/res-uploads/button-upload'));
 
 //testing 
 app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-model'));
@@ -97,8 +100,11 @@ app.use('/api/v1/fake-project-data', require('./routers/project/fake-project-mod
 
 
 //init new projects
-app.post('/init-project-tb', (req, res) => { 
+app.post('/init-project-tb', auth, (req, res) => { 
    //res.json(req.query.id);
+   console.log('recivied from token')
+   console.log(req.id)
+
    let newPrj = { 
     uuid:req.query.id, 
     checked: false
@@ -121,7 +127,10 @@ app.post('/init-project-tb', (req, res) => {
 })
 
 //Ava Project file test
-app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
+app.post('/upload', auth, upload.single('pad_file'),async function (req, res, next) {
+
+  console.log('recivied from token')
+  console.log(req.id)
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
     const progress = (p, _checkpoint) => {
@@ -143,7 +152,7 @@ app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
           // console.log(fileName)
           // console.log(filePath)
 
-          const result = await client.multipartUpload(fileName, filePath.replace('\\','/'), {
+          const result = await client.multipartUpload("projects-uploads/"+ req.id +"/" + fileName, filePath.replace('\\','/'), {
             progress,
             meta: {
               year: 2021,
@@ -252,15 +261,17 @@ app.post('/upload', upload.single('pad_file'),async function (req, res, next) {
   })
 
 //Ava_img file upload test 
-app.post('/upload-img', upload.single('image'), async function (req, res, next) { 
-  console.log(req.file);
-  
+app.post('/upload-img', auth, upload.single('image'), async function (req, res, next) { 
+  // console.log(req.file);
+  console.log('recivied from token')
+  console.log(req.id) // user_id
+
   if (req.file) { 
     try {
       const fileName = req.file.filename;
       const filePath = req.file.path;
       //console.log(filePath.replace('\\', '/'))
-      const result = await client.put(fileName, filePath.replace('\\', '/'));
+      const result = await client.put("projects-uploads/"+ req.id +"/" + fileName, filePath.replace('\\', '/'));
          
         if (result) { 
            console.log(result);   
@@ -342,15 +353,17 @@ app.post('/upload-img', upload.single('image'), async function (req, res, next) 
 })
 
 //upload project 3d image
-app.post('/upload-img3d',  upload.single('image3d'), async function(req, res, next) {
-  console.log(req.file);
-  
+app.post('/upload-img3d', auth, upload.single('image3d'), async function(req, res, next) {
+  // console.log(req.file);
+  console.log('recivied id from token')
+  console.log(req.id)
+
   if (req.file) { 
     try {
       const fileName = req.file.filename;
       const filePath = req.file.path;
       //console.log(filePath.replace('\\', '/'))
-      const result = await client.put(fileName, filePath.replace('\\', '/'));
+      const result = await client.put("projects-uploads/"+ req.id +"/" + fileName, filePath.replace('\\', '/'));
          
         if (result) { 
            console.log(result); 
