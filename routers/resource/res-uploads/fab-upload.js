@@ -1,25 +1,12 @@
-
-
-
 const express = require('express');
 const router = express.Router();
 const ResFab = require('../../../models/ResFab');
 const multer =  require('multer');
-const OSS = require('ali-oss');
 const fs = require('fs');
 const auth = require('../../../middleware/auth');
+const clientOss = require('../../../utils/aws_oss_config');
+const client = clientOss;
 
-//decoration  upload 
-// drc_url, img_url
-// drc_url_name, img_url_name 
-const client = new OSS({
-    region: 'oss-cn-shanghai',
-    accessKeyId: 'LTAI4G4tqE9gYvgWzxXknjAu',
-    accessKeySecret: 'ddTXBZVakDj2UNdoQoChafs6PdSFC8',
-    bucket: 'pgm-aphro3d-server-uploads',
-    //endpoint: 'oss-cn-shanghai.aliyuncs.com',
-    endpoint: 'oss-accelerate.aliyuncs.com'
-})
 var storageFab =  multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads')

@@ -2,25 +2,11 @@ const express =  require('express');
 const router = express.Router();
 const ResBtn = require('./../../../models/ResButton');
 const multer =  require('multer');
-const OSS = require('ali-oss');
 const fs = require('fs');
 const auth = require('../../../middleware/auth');
+const clientOss = require('../../../utils/aws_oss_config');
 
-const client = new OSS({
-    region: 'oss-cn-shanghai',
-    accessKeyId: 'LTAI4G4tqE9gYvgWzxXknjAu',
-    accessKeySecret: 'ddTXBZVakDj2UNdoQoChafs6PdSFC8',
-    bucket: 'pgm-aphro3d-server-uploads',
-    //endpoint: 'oss-cn-shanghai.aliyuncs.com',
-    endpoint: 'oss-accelerate.aliyuncs.com'
-})
-  
-
-//create button uploads links  
-// 1 upload xml file
-// 2 upload button img file 
-// 3 upload  mdl file 
-// also allow to save each file name fields
+const client =  clientOss;
 
 var storageBtn =  multer.diskStorage({
     destination: function (req, file, cb) {

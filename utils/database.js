@@ -1,9 +1,16 @@
+const dotenv = require('dotenv').config();
 const Sequelize = require('sequelize');
 
+const loc_host = process.env.DB_HOST;
+const loc_user = process.env.DB_USER;
+const loc_pass = process.env.DB_PASS;
+const loc_table = process.env.DB_TABLE;
 
-const sequelize = new Sequelize('aphro3d_pgm', 'root', 'zhouli1118', {
-    dialect: 'mysql',
-    host: 'localhost',
+const db_type = process.env.DB_TYPE;
+
+const sequelize = new Sequelize(loc_table, loc_user, loc_pass, {
+    dialect: db_type,
+    host: loc_host,
 });
 
 module.exports = sequelize;

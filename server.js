@@ -4,22 +4,15 @@ const swaggerUi = require("swagger-ui-express");
 const sequelize = require('./utils/database')
 const path = require('path');
 const multer = require('multer');
-const co = require('co');
-const OSS = require('ali-oss');
 var fs = require('fs');
 
 const auth = require('./middleware/auth');
 
 const ProjectM = require('./models/Project');
 
-const client = new OSS({
-  region: 'oss-cn-shanghai',
-  accessKeyId: 'LTAI4G4tqE9gYvgWzxXknjAu',
-  accessKeySecret: 'ddTXBZVakDj2UNdoQoChafs6PdSFC8',
-  bucket: 'pgm-aphro3d-server-uploads',
-  //endpoint: 'oss-cn-shanghai.aliyuncs.com',
-  endpoint: 'oss-accelerate.aliyuncs.com'
-})
+const clientOss = require('./utils/aws_oss_config');
+
+const client = clientOss;
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -152,9 +145,6 @@ app.post('/upload', auth, upload.single('pad_file'),async function (req, res, ne
         try {
           const fileName = req.file.filename;
           const filePath = req.file.path;      
-          
-          // console.log(fileName)
-          // console.log(filePath)
 
           const result = await client.multipartUpload("projects-uploads/"+ req.id +"/" + fileName, filePath.replace('\\','/'), {
             progress,
